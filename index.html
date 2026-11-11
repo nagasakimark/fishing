@@ -17,7 +17,7 @@
   /* sky */
   #sun { z-index: 1; animation: sunspin 10s ease-in-out infinite alternate; }
   @keyframes sunspin { from { transform: rotate(-10deg) scale(.96); } to { transform: rotate(10deg) scale(1.04); } }
-  .cloud { z-index: 1; opacity: .95; }
+  .cloud { position: absolute; left: 0; z-index: 1; pointer-events: none; overflow: visible; filter: drop-shadow(0 4px 0 rgba(120,170,210,.35)); }
   .horizon { z-index: 1; filter: saturate(.7) brightness(1.05); opacity: .85; }
   #waves { position: absolute; left: 0; top: 156px; width: 2732px; height: 44px; z-index: 10; pointer-events: none;
     animation: waves 9s linear infinite; }
@@ -280,6 +280,21 @@ function spr(parent, name, x, y, w, cls = '', extra = {}) {
   parent.appendChild(i); return i;
 }
 const clouds = [];
+// fluffy white cartoon clouds (three shapes)
+const CLOUD_SHAPES = [
+  'M20 60 a20 20 0 0 1 8 -38 a26 26 0 0 1 46 -8 a22 22 0 0 1 38 10 a18 18 0 0 1 8 36 Z',
+  'M18 56 a18 18 0 0 1 10 -32 a30 30 0 0 1 56 -4 a20 20 0 0 1 20 36 Z',
+  'M14 58 a16 16 0 0 1 6 -30 a22 22 0 0 1 36 -14 a26 26 0 0 1 44 6 a20 20 0 0 1 22 38 Z',
+];
+function makeCloud(parent, y, w, v) {
+  const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  s.setAttribute('viewBox', '0 0 130 64'); s.setAttribute('class', 'cloud');
+  s.style.top = y + 'px'; s.style.width = w + 'px'; s.style.height = w * 64 / 130 + 'px';
+  s.innerHTML = `<path d="${CLOUD_SHAPES[v]}" fill="#fff" stroke="#d6ecf8" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="${CLOUD_SHAPES[v]}" fill="#eaf6fd" transform="translate(0 6) scale(1 .9)" opacity=".6"/>
+    <path d="${CLOUD_SHAPES[v]}" fill="#fff" transform="translate(4 -2) scale(.94 .92)"/>`;
+  parent.appendChild(s); return s;
+}
 (function scenery() {
   let d = 'M0 14';
   for (let x = 0; x < 2732; x += 683 / 12) d += ` Q${x + 683 / 48} 4 ${x + 683 / 24} 14 T${x + 683 / 12} 14`;
@@ -288,8 +303,8 @@ const clouds = [];
 
   const sky = $('sky');
   spr(sky, 'sun', 1052, 2, 104).id = 'sun';
-  [['cloud2', 380, 4, 120, 7], ['cloud4', 720, 30, 75, 10], ['cloud1', 880, 2, 88, 8], ['cloud3', 160, 70, 100, 6]]
-    .forEach(([n, x, y, w, s]) => clouds.push({ el: spr(sky, n, 0, y, w, 'cloud'), x, w, speed: s }));
+  [[380, 14, 130, 7, 0], [720, 46, 90, 10, 1], [900, 10, 115, 8, 2], [150, 78, 100, 6, 1], [1250, 90, 80, 9, 0]]
+    .forEach(([x, y, w, s, v]) => clouds.push({ el: makeCloud(sky, y, w, v), x, w, speed: s }));
   // far-away islands on the horizon (bottoms tucked under the waves)
   spr(sky, 'volcano', 40, SURFACE - 52, 85, 'horizon');
   spr(sky, 'island', 255, SURFACE - 88, 70, 'horizon');
