@@ -19,7 +19,7 @@
   @keyframes sunspin { from { transform: rotate(-10deg) scale(.96); } to { transform: rotate(10deg) scale(1.04); } }
   .cloud { z-index: 1; opacity: .95; }
   .horizon { z-index: 1; filter: saturate(.7) brightness(1.05); opacity: .85; }
-  #waves { position: absolute; left: 0; top: 156px; width: 2732px; height: 30px; z-index: 6; pointer-events: none;
+  #waves { position: absolute; left: 0; top: 156px; width: 2732px; height: 44px; z-index: 10; pointer-events: none;
     animation: waves 9s linear infinite; }
   @keyframes waves { to { transform: translateX(-683px); } }
   .rays { position: absolute; left: 0; top: 170px; width: 100%; height: 428px; pointer-events: none; z-index: 1;
@@ -155,7 +155,10 @@
 <div id="stage">
   <div id="sky"></div>
   <div class="rays"></div>
-  <svg id="waves" viewBox="0 0 2732 30" preserveAspectRatio="none"><path id="wavePath" fill="#2bb3d9" stroke="#fff" stroke-width="4" d=""/></svg>
+  <svg id="waves" viewBox="0 0 2732 44" preserveAspectRatio="none">
+    <defs><linearGradient id="waveFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2bb3d9"/><stop offset="1" stop-color="#28add5"/></linearGradient></defs>
+    <path id="waveFillPath" fill="url(#waveFill)" d=""/>
+    <path id="waveCrest" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" d=""/></svg>
   <div class="sand"></div>
   <div id="floor"></div>
 
@@ -278,9 +281,10 @@ function spr(parent, name, x, y, w, cls = '', extra = {}) {
 }
 const clouds = [];
 (function scenery() {
-  let d = 'M0 30 L0 14';
-  for (let x = 0; x <= 2732; x += 683 / 12) d += ` Q${x + 683 / 48} 4 ${x + 683 / 24} 14 T${x + 683 / 12} 14`;
-  $('wavePath').setAttribute('d', d + ' L2732 30 Z');
+  let d = 'M0 14';
+  for (let x = 0; x < 2732; x += 683 / 12) d += ` Q${x + 683 / 48} 4 ${x + 683 / 24} 14 T${x + 683 / 12} 14`;
+  $('waveCrest').setAttribute('d', d);
+  $('waveFillPath').setAttribute('d', d + ' L2732 44 L0 44 Z');
 
   const sky = $('sky');
   spr(sky, 'sun', 1052, 2, 104).id = 'sun';
@@ -500,7 +504,7 @@ function updateBoat(dt) {
     if (boat.x < BOAT_MIN) boat.dir = 1;
   }
   const bobY = Math.sin(boat.bob) * 3, tilt = Math.sin(boat.bob * .8) * 2;
-  $('boat').style.transform = `translate(${boat.x - 105}px, ${SURFACE - 34 + bobY}px) rotate(${tilt}deg)`;
+  $('boat').style.transform = `translate(${boat.x - 105}px, ${SURFACE - 41 + bobY}px) rotate(${tilt}deg)`;
 
   // what the fisherman is doing right now
   const hs = hook.state, w = hook.caught ? hook.caught.info.weight : 0;
@@ -515,7 +519,7 @@ function updateBoat(dt) {
   else if (hs === 'landed') { F.bend.t = 4; F.rodRot.t = -6; }
   Object.values(F).forEach(s => stepSpring(s, dt));
 
-  const fx = boat.x - 78, fy = SURFACE - 6 - 148 + bobY;
+  const fx = boat.x - 78, fy = SURFACE - 13 - 148 + bobY;
   $('fisher').style.transform = `translate(${fx}px, ${fy + F.hop.v}px) rotate(${F.lean.v}deg)`;
   // where the hand is after leaning around the feet
   const L = F.lean.v * Math.PI / 180, vx = HAND.x - FEET.x, vy = HAND.y - FEET.y;
