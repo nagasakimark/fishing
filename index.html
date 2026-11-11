@@ -255,7 +255,6 @@ const TEAM_DEFS = [
   { name: 'Green', color: '#2fb84f', emoji: '🟢' }, { name: 'Yellow', color: '#f0b400', emoji: '🟡' },
   { name: 'Purple', color: '#8a5cf5', emoji: '🟣' }, { name: 'Orange', color: '#ff8a1f', emoji: '🟠' },
 ];
-const article = n => /^[aeiou]/.test(n) ? 'an' : 'a';
 
 const W = 1366, H = 598, SURFACE = 170, FLOOR = 560;
 const $ = id => document.getElementById(id);
@@ -367,13 +366,6 @@ const sfx = {
   nothing: () => { tone(400, .2, 'triangle', .15, 250); tone(250, .3, 'triangle', .15, 180, .2); },
   fanfare: () => [523, 523, 523, 659, 784, 659, 784].forEach((f, i) => tone(f, i === 6 ? .6 : .18, 'square', .1, null, [0, .15, .3, .45, .7, .9, 1.05][i])),
 };
-function say(text) {
-  if (!soundOn || !('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = .85;
-  const v = speechSynthesis.getVoices().find(v => v.lang.startsWith('en')); if (v) u.voice = v;
-  speechSynthesis.speak(u);
-}
 $('soundBtn').onclick = () => { soundOn = !soundOn; $('soundBtn').textContent = soundOn ? '🔊' : '🔇'; };
 
 // ================= sea animals =================
@@ -666,8 +658,6 @@ function reveal() {
   $('revealBtn').classList.add('hidden');
   $('correctBtn').classList.remove('hidden'); $('wrongBtn').classList.remove('hidden');
   sfx.reveal();
-  const n = current.name;
-  setTimeout(() => say(`It's ${article(n)} ${n}!`), 350);
 }
 $('mystery').onclick = reveal; $('revealBtn').onclick = reveal;
 
@@ -756,7 +746,6 @@ function finishSolo() {
     const total = caught.length;
     $('endTotal').textContent = `We caught ${total} sea animal${total === 1 ? '' : 's'}! 🎉`;
     sfx.fanfare(); confetti();
-    setTimeout(() => say(`We caught ${total} sea animal${total === 1 ? '' : 's'}! Great job!`), 600);
   }, delay + 200);
 }
 function finishTeams() {
@@ -794,7 +783,6 @@ function finishTeams() {
     if (max > 0) {
       winners.forEach(w => { const c = cols[teams.indexOf(w)]; c.classList.add('win'); c.querySelector('.thead').textContent = `👑 ${w.name} 👑`; });
       sfx.fanfare(); confetti();
-      setTimeout(() => say(winners.length === 1 ? `${winners[0].name} team wins!` : "It's a tie!"), 700);
     }
   }, delay + 400);
 }
