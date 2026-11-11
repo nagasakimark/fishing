@@ -33,6 +33,8 @@
   .far { z-index: 1; opacity: .35; filter: brightness(.7) saturate(.6); }
   .mid { z-index: 2; }
   .front { z-index: 5; }
+  .house { transform-origin: 50% 100%; animation: house 3.5s ease-in-out infinite; }
+  @keyframes house { 50% { transform: scale(1.02, .985); } }
   .sway { transform-origin: 50% 100%; animation: sway 4s ease-in-out infinite alternate; }
   @keyframes sway { from { transform: rotate(-6deg) skewX(-3deg); } to { transform: rotate(6deg) skewX(3deg); } }
   .pulse { transform-origin: 50% 100%; animation: pulse 2.4s ease-in-out infinite; }
@@ -313,7 +315,7 @@ const clouds = [];
   spr(f, 'pearl', 889, 0, 28, 'twinkle', { bottom: 52 });
   spr(f, 'greenmound', 965, 0, 130, 'mid', { bottom: 32 });
   spr(f, 'coral_orange', 1085, 0, 65, 'mid sway', { bottom: 40, delay: -1.7 });
-  spr(f, 'seaweed', 1135, 0, 60, 'mid sway', { bottom: 38, delay: -2.6 });
+  spr(f, 'pineapple', 1110, 0, 82, 'mid house', { bottom: 30 });
   spr(f, 'sponge2', 1215, 0, 100, 'mid', { bottom: 34 });
   spr(f, 'seaweed', 1310, 0, 55, 'mid sway', { bottom: 38, delay: -.9 });
   // little things in front
@@ -337,7 +339,7 @@ function spawnBubble(x, y, big) {
   bubbles.push({ el: b, x: x ?? Math.random() * W, y: y ?? FLOOR - 10, r, ph: Math.random() * 6 });
 }
 // bubbles come out of the clam, the anemones and the rock now and then
-const VENTS = [[902, FLOOR - 30], [945, FLOOR - 10], [1284, FLOOR - 10], [180, FLOOR - 40]];
+const VENTS = [[902, FLOOR - 30], [945, FLOOR - 10], [1284, FLOOR - 10], [180, FLOOR - 40], [1181, 478], [1181, 478]];
 
 // ================= sound =================
 let soundOn = true, actx = null;
