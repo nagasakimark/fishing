@@ -140,14 +140,59 @@
   #endButtons { display: flex; gap: 20px; }
   .confetti { position: absolute; width: 12px; height: 18px; z-index: 40; pointer-events: none; }
 
-  #startCard { width: 900px; padding: 30px 40px; text-align: center; animation: pop .35s; }
-  #startCard h1 { font-size: 62px; color: #1b5e8a; }
-  #startCard p { font-size: 23px; color: #4a5b6b; margin: 10px 0 22px; line-height: 1.4; }
+  .setting { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+  .slabel { font-size: 22px; font-weight: 900; color: #1b5e8a; width: 150px; text-align: right; margin-right: 6px; }
+  .opt { font: inherit; font-weight: 900; font-size: 20px; padding: 8px 18px; border-radius: 999px; cursor: pointer;
+    border: 3px solid #b9d3e6; background: #fff; color: #6b7a89; }
+  .opt.on { background: #1b5e8a; border-color: #1b5e8a; color: #fff; }
+
+  /* silhouettes */
+  #stage.sil .animal img { filter: brightness(0); opacity: .78; }
+  #stage.sil .animal.found img { filter: drop-shadow(0 4px 4px rgba(0,0,0,.18)); opacity: 1; }
+  #bigAnimal { transition: filter .8s, opacity .8s; }
+  #bigAnimal.sil { filter: brightness(0); opacity: .9; }
+
+  /* flipping the caught animal over to show points */
+  #bigAnimalWrap { position: relative; perspective: 1200px; }
+  #flipper { position: relative; width: 480px; height: 440px; transform-style: preserve-3d; transition: transform .9s cubic-bezier(.3,1.5,.5,1); }
+  #flipper.flipped { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .face.back { transform: rotateY(180deg); }
+  #bigAnimalBack { max-width: 470px; max-height: 420px; transform: scaleX(-1); filter: brightness(.55) saturate(.5); }
+  #pointsBack { position: absolute; width: 170px; height: 170px; border-radius: 50%; background: #ffd23f; border: 8px solid #fff;
+    box-shadow: 0 6px 0 #d49b00, 0 0 40px 10px rgba(255,210,63,.7); display: flex; align-items: center; justify-content: center;
+    font-size: 110px; font-weight: 900; color: #c75b00; text-shadow: 0 4px 0 #fff3c4; }
+  #flipper.flipped #pointsBack { animation: pointsIn .5s .5s both; }
+  @keyframes pointsIn { from { transform: scale(0) rotate(-90deg); } 70% { transform: scale(1.2); } }
+  #pointsPop { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) scale(0); font-size: 100px; font-weight: 900;
+    color: #ff8a1f; text-shadow: 0 5px 0 #fff, 0 0 20px rgba(255,255,255,.9); pointer-events: none; transition: transform .4s cubic-bezier(.3,1.6,.5,1); }
+  #pointsPop.show { transform: translate(-50%, -50%) scale(1); }
+  .floatText { position: absolute; z-index: 26; font-size: 34px; font-weight: 900; transform: translate(-50%, 0); pointer-events: none;
+    text-shadow: 0 3px 0 #fff; animation: floatUp 1.3s ease-out forwards; }
+  @keyframes floatUp { to { transform: translate(-50%, 40px); opacity: 0; } }
+
+  /* size points explanation */
+  #pointsCard { width: 1100px; padding: 24px 30px; text-align: center; animation: pop .35s; }
+  #pointsTitle { font-size: 42px; font-weight: 900; color: #1b5e8a; margin-bottom: 14px; }
+  #pointsGrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 18px; }
+  .ptile { background: #e7f6ff; border-radius: 18px; padding: 8px; height: 172px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ptile img { max-width: 140px; max-height: 92px; }
+  .pstars { font-size: 18px; margin-top: 6px; letter-spacing: -2px; }
+  .pnum { font-size: 22px; font-weight: 900; color: #ff8a1f; }
+  #pointsGo { font-size: 32px; padding: 14px 44px; }
+  .ticon { position: relative; }
+  .ticon img { width: 100%; height: 100%; object-fit: contain; animation: drop .3s; }
+  .ticon span { position: absolute; right: -2px; bottom: -2px; background: #ffd23f; color: #c75b00; font-size: 13px; font-weight: 900;
+    border-radius: 50%; width: 19px; height: 19px; line-height: 19px; text-align: center; border: 2px solid #fff; }
+
+  #startCard { width: 900px; padding: 26px 40px; text-align: center; animation: pop .35s; }
+  #startCard h1 { font-size: 54px; color: #1b5e8a; }
+  #startCard p { font-size: 22px; color: #4a5b6b; margin: 6px 0 12px; line-height: 1.35; }
   .modes { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
   .modes .btn { font-size: 26px; padding: 14px 28px; }
   .modes .big { font-size: 30px; padding: 16px 36px; }
   .rvb { background: linear-gradient(90deg, #e5484d 50%, #2f86de 50%); }
-  .keys { font-size: 15px !important; color: #8a99a8 !important; margin: 18px 0 0 !important; }
+  .keys { font-size: 15px !important; color: #8a99a8 !important; margin: 12px 0 0 !important; }
 </style>
 </head>
 <body>
@@ -187,7 +232,16 @@
     <div class="card" id="startCard">
       <h1>🎣 Gone Fishing!</h1>
       <p>Drop the hook and catch a sea animal.<br>Can you say <b>what sea animal it is?</b></p>
-      <div class="modes">
+      <div class="setting"><span class="slabel">Points</span>
+        <button class="opt on" data-scoring="one">1 each</button>
+        <button class="opt" data-scoring="size">By size 🐳</button>
+        <button class="opt" data-scoring="random">Random ⭐1–5</button>
+      </div>
+      <div class="setting"><span class="slabel">Silhouettes</span>
+        <button class="opt on" data-sil="0">Off</button>
+        <button class="opt" data-sil="1">On 👤</button>
+      </div>
+      <div class="modes" style="margin-top:18px">
         <button class="btn orange big" data-teams="1">🪣 Whole class</button>
         <button class="btn rvb big" data-teams="2">Red vs Blue</button>
       </div>
@@ -203,7 +257,13 @@
 
   <div class="overlay" id="catchOverlay">
     <div class="card" id="catchCard">
-      <div id="bigAnimalWrap"><img id="bigAnimal" alt=""></div>
+      <div id="bigAnimalWrap">
+        <div id="flipper">
+          <div class="face front"><img id="bigAnimal" alt=""></div>
+          <div class="face back"><img id="bigAnimalBack" alt=""><div id="pointsBack">3</div></div>
+        </div>
+        <div id="pointsPop"></div>
+      </div>
       <div id="catchRight">
         <div id="catchTeam" class="hidden"></div>
         <div id="question">What sea animal<br>is this??</div>
@@ -217,6 +277,14 @@
           <button class="btn red hidden" id="wrongBtn">❌ Incorrect</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="pointsOverlay">
+    <div class="card" id="pointsCard">
+      <div id="pointsTitle">⭐ Big animals score more points! ⭐</div>
+      <div id="pointsGrid"></div>
+      <button class="btn orange" id="pointsGo">🎣 Let's fish!</button>
     </div>
   </div>
 
@@ -380,6 +448,8 @@ const sfx = {
   correct: () => [784, 988, 1175, 1568].forEach((f, i) => tone(f, .3, 'sine', .2, null, i * .1)),
   wrong: () => { tone(220, .25, 'sawtooth', .12); tone(180, .35, 'sawtooth', .12, null, .2); },
   tick: () => tone(1200, .06, 'square', .08),
+  flip: () => { tone(300, .25, 'sine', .15, 900); tone(500, .2, 'triangle', .08, 1200, .1); },
+  points: n => { for (let i = 0; i < n; i++) tone(880 + i * 180, .12, 'square', .09, null, i * .11); },
   plop: () => tone(600, .15, 'sine', .25, 150),
   turn: () => { tone(660, .12, 'triangle', .15); tone(880, .18, 'triangle', .15, null, .12); },
   nothing: () => { tone(400, .2, 'triangle', .15, 250); tone(250, .3, 'triangle', .15, 180, .2); },
@@ -620,12 +690,48 @@ function updateHook(dt) {
   $('hook').style.transform = `translate(${hook.x - 11}px, ${hook.y}px)`;
 }
 
+// ================= settings =================
+// scoring: 'one' = 1 point each, 'size' = bigger animals score more, 'random' = 1–5 hidden on the animal's back
+const settings = { scoring: 'one', silhouette: false };
+const SIZE_POINTS = { whale: 5, shark: 4, dolphin: 4, turtle: 3, squid: 3, octopus: 3, penguin: 2, crab: 2, fish: 1, jellyfish: 1 };
+const usesPoints = () => settings.scoring !== 'one';
+document.querySelectorAll('[data-scoring]').forEach(b => b.onclick = () => {
+  settings.scoring = b.dataset.scoring;
+  document.querySelectorAll('[data-scoring]').forEach(o => o.classList.toggle('on', o === b));
+});
+document.querySelectorAll('[data-sil]').forEach(b => b.onclick = () => {
+  settings.silhouette = b.dataset.sil === '1';
+  document.querySelectorAll('[data-sil]').forEach(o => o.classList.toggle('on', o === b));
+});
+
+// random points with rubber banding: teams that are behind tend to get bigger numbers,
+// the leader tends to get smaller ones, and we avoid landing exactly on another team's score (no draws)
+function rollPoints(t) {
+  const vals = [1, 2, 3, 4, 5];
+  let w = vals.map(() => 1);
+  const others = teams.filter(o => o !== t).map(o => o.score);
+  if (others.length) {
+    const avg = others.reduce((s, x) => s + x, 0) / others.length, lead = Math.max(...others);
+    const ahead = t.score - (avg + lead) / 2;
+    const bias = Math.max(-1.4, Math.min(1.4, -ahead / 5));
+    w = vals.map(v => Math.exp(bias * (v - 3)));
+    const tie = v => others.includes(t.score + v);
+    if (vals.some(v => !tie(v))) w = w.map((x, i) => tie(vals[i]) ? 0 : x);
+  }
+  let r = Math.random() * w.reduce((s, x) => s + x, 0);
+  for (let i = 0; i < 5; i++) { r -= w[i]; if (r <= 0) return vals[i]; }
+  return 3;
+}
+function pointsFor(a, t) {
+  return settings.scoring === 'size' ? SIZE_POINTS[a.name] : settings.scoring === 'random' ? rollPoints(t) : 1;
+}
+
 // ================= teams =================
 let teams = [], turn = 0;
 const team = () => teams[turn];
 function setupTeams(n) {
   teams = n === 1 ? [{ name: 'Class', color: '#2f86de', solo: true }] : TEAM_DEFS.slice(0, n).map(t => ({ ...t }));
-  teams.forEach(t => { t.caught = []; });
+  teams.forEach(t => { t.caught = []; t.score = 0; });
   turn = 0;
   const box = $('teams'); box.innerHTML = '';
   teams.forEach(t => {
@@ -639,8 +745,12 @@ function setupTeams(n) {
       c.innerHTML = `<div class="cname">${t.name}</div><div class="ccount">0</div>`;
     }
     t.chip = c; box.appendChild(c);
+    updateChip(t);
   });
   showTurn(false);
+}
+function updateChip(t) {
+  t.chip.querySelector('.ccount').textContent = usesPoints() ? `${t.score}⭐` : t.caught.length;
 }
 function showTurn(announce = true) {
   teams.forEach((t, i) => t.chip.classList.toggle('active', i === turn && teams.length > 1));
@@ -653,11 +763,14 @@ function showTurn(announce = true) {
 function nextTurn() { if (teams.length > 1 && playing) { turn = (turn + 1) % teams.length; showTurn(); } }
 
 // ================= catch flow =================
-let current = null;
+let current = null, judging = false;
 function showCatch(a) {
-  current = a;
+  current = a; judging = false;
   a.el.style.visibility = 'hidden';
-  $('bigAnimal').src = `animals/${a.name}.webp`;
+  $('bigAnimal').src = $('bigAnimalBack').src = `animals/${a.name}.webp`;
+  $('bigAnimal').classList.toggle('sil', settings.silhouette);
+  $('flipper').classList.remove('flipped');
+  $('pointsPop').classList.remove('show');
   $('mystery').classList.remove('open');
   $('answerWord').textContent = a.name;
   $('answerJa').textContent = ANIMALS[a.name].ja;
@@ -672,7 +785,7 @@ function showCatch(a) {
   sfx.splash();
 }
 function reveal() {
-  if (!current || $('mystery').classList.contains('open')) return;
+  if (!current || judging || $('mystery').classList.contains('open')) return;
   $('mystery').classList.add('open');
   $('revealBtn').classList.add('hidden');
   $('correctBtn').classList.remove('hidden'); $('wrongBtn').classList.remove('hidden');
@@ -681,15 +794,33 @@ function reveal() {
 $('mystery').onclick = reveal; $('revealBtn').onclick = reveal;
 
 function judge(correct) {
-  if (!current || !$('mystery').classList.contains('open')) return;
-  const a = current, t = team(); current = null;
+  if (!current || judging || !$('mystery').classList.contains('open')) return;
+  if (!correct) return closeCatch(false);
+  judging = true;
+  const a = current, t = team(), pts = pointsFor(a, t);
+  $('correctBtn').classList.add('hidden'); $('wrongBtn').classList.add('hidden');
+  sfx.correct();
+  let wait = 0;
+  if (settings.silhouette) { $('bigAnimal').classList.remove('sil'); wait += 900; }   // colour comes back
+  if (settings.scoring === 'random') {
+    setTimeout(() => { $('pointsBack').textContent = pts; $('flipper').classList.add('flipped'); sfx.flip(); }, wait + 150);
+    setTimeout(() => sfx.points(pts), wait + 800);
+    wait += 2300;
+  } else if (settings.scoring === 'size') {
+    setTimeout(() => { $('pointsPop').textContent = `+${pts}⭐`; $('pointsPop').classList.add('show'); sfx.points(pts); }, wait + 100);
+    wait += 1500;
+  }
+  setTimeout(() => closeCatch(true, pts), wait);
+}
+function closeCatch(correct, pts = 0) {
+  const a = current, t = team(); current = null; judging = false;
   $('catchOverlay').classList.remove('show');
   a.el.style.visibility = ''; a.el.classList.remove('hooked');
   if (correct) {
-    sfx.correct(); F.hop.vel -= 420;
-    setTimeout(() => { F.hop.vel -= 300; }, 450);
-    t.caught.push(a.name);
-    flyToBucket(a, t);
+    F.hop.vel -= 420; setTimeout(() => { F.hop.vel -= 300; }, 450);
+    t.caught.push({ name: a.name, pts }); t.score += pts;
+    a.el.classList.add('found');
+    flyToBucket(a, t, pts);
     sea = sea.filter(s => s !== a);
     respawnLater(a.name);
   } else {
@@ -704,10 +835,11 @@ function judge(correct) {
 $('correctBtn').onclick = () => judge(true);
 $('wrongBtn').onclick = () => judge(false);
 
-function flyToBucket(a, t) {
+function flyToBucket(a, t, pts) {
   const el = a.el, sx = a.x - a.w / 2, sy = a.y - a.h / 2;
   const r = t.chip.getBoundingClientRect(), s = stage.getBoundingClientRect(), k = s.width / W;
-  const tx = (r.left + r.width / 2 - s.left) / k - a.w / 2, ty = (r.top + r.height / 2 - s.top) / k - a.h / 2;
+  const cx = (r.left + r.width / 2 - s.left) / k, cy = (r.top + r.height / 2 - s.top) / k;
+  const tx = cx - a.w / 2, ty = cy - a.h / 2;
   let p = 0; el.style.zIndex = 25;
   const step = () => {
     p += 1 / 40; const e = p * p * (3 - 2 * p);
@@ -715,11 +847,17 @@ function flyToBucket(a, t) {
     if (p < 1) requestAnimationFrame(step);
     else {
       el.remove();
-      t.chip.querySelector('.ccount').textContent = t.caught.length;
+      updateChip(t);
       t.chip.classList.remove('bump'); void t.chip.offsetWidth; t.chip.classList.add('bump');
+      if (usesPoints()) floatText(`+${pts}`, cx, cy + 40, t.solo ? '#ff8a1f' : t.color);
     }
   };
   step();
+}
+function floatText(text, x, y, color) {
+  const d = document.createElement('div'); d.className = 'floatText'; d.textContent = text;
+  d.style.left = x + 'px'; d.style.top = y + 'px'; d.style.color = color;
+  stage.appendChild(d); setTimeout(() => d.remove(), 1300);
 }
 
 let toastTimer;
@@ -744,7 +882,7 @@ function finish() {
 function finishSolo() {
   const caught = teams[0].caught, grid = $('endGrid');
   $('endTitle').textContent = "🪣 Let's count the bucket!";
-  const counts = {}; caught.forEach(n => counts[n] = (counts[n] || 0) + 1);
+  const counts = {}; caught.forEach(c => counts[c.name] = (counts[c.name] || 0) + 1);
   const order = NAMES.filter(n => counts[n]).sort((x, y) => counts[y] - counts[x]);
   if (!order.length) { grid.innerHTML = '<div style="font-size:36px;color:#6b7a89;text-align:center">The bucket is empty! 🪣<br>Let\'s go fishing!</div>'; return; }
   const cards = order.map(n => {
@@ -762,44 +900,51 @@ function finishSolo() {
     delay += 150;
   });
   later(() => {
-    const total = caught.length;
-    $('endTotal').textContent = `We caught ${total} sea animal${total === 1 ? '' : 's'}! 🎉`;
+    const total = caught.length, score = teams[0].score;
+    $('endTotal').textContent = `We caught ${total} sea animal${total === 1 ? '' : 's'}!` + (usesPoints() ? ` ${score}⭐ points! 🎉` : ' 🎉');
     sfx.fanfare(); confetti();
   }, delay + 200);
 }
 function finishTeams() {
   $('endTitle').textContent = "🪣 Let's count the buckets!";
-  const grid = $('endGrid'), max = Math.max(0, ...teams.map(t => t.caught.length));
-  const size = max <= 8 ? 54 : max <= 16 ? 42 : max <= 30 ? 32 : 24;
+  const pts = usesPoints();
+  const grid = $('endGrid'), most = Math.max(0, ...teams.map(t => t.caught.length));
+  const size = most <= 8 ? 54 : most <= 16 ? 42 : most <= 30 ? 32 : 24;
   const cols = teams.map(t => {
     const c = document.createElement('div'); c.className = 'tcol'; c.style.borderColor = t.color;
     c.innerHTML = `<div class="thead" style="background:${t.color}">${t.name}</div><div class="ticons"></div><div class="tnum" style="color:${t.color}">0</div>`;
     grid.appendChild(c); return c;
   });
+  const running = teams.map(() => 0);
   let delay = 700;
-  for (let k = 1; k <= max; k++) {   // all the teams count up together, one animal at a time
+  for (let k = 1; k <= most; k++) {   // all the teams count up together, one animal at a time
     later(() => {
       teams.forEach((t, i) => {
         if (t.caught.length < k) return;
-        const img = document.createElement('img'); img.src = `animals/${t.caught[k - 1]}.webp`;
-        img.style.width = img.style.height = size + 'px';
-        cols[i].querySelector('.ticons').appendChild(img);
-        cols[i].querySelector('.tnum').textContent = k;
+        const c = t.caught[k - 1];
+        const wrap = document.createElement('div'); wrap.className = 'ticon';
+        wrap.style.width = wrap.style.height = size + 'px';
+        wrap.innerHTML = `<img src="animals/${c.name}.webp" alt="">` + (pts ? `<span>${c.pts}</span>` : '');
+        cols[i].querySelector('.ticons').appendChild(wrap);
+        running[i] += pts ? c.pts : 1;
+        cols[i].querySelector('.tnum').textContent = pts ? `${running[i]}⭐` : running[i];
       });
       sfx.tick();
     }, delay);
-    delay += max > 20 ? 160 : 320;
+    delay += most > 20 ? 160 : 320;
   }
   later(() => {
-    const winners = teams.filter(t => t.caught.length === max);
+    const scoreOf = t => pts ? t.score : t.caught.length;
+    const best = Math.max(0, ...teams.map(scoreOf));
+    const winners = teams.filter(t => scoreOf(t) === best);
     let msg;
-    if (max === 0) msg = 'No sea animals yet! 🫧';
+    if (best === 0) msg = 'No sea animals yet! 🫧';
     else if (winners.length === teams.length) msg = "It's a tie! Everyone wins! 🎉";
     else if (winners.length > 2) msg = `It's a ${winners.length}-way tie! 🎉`;
     else if (winners.length > 1) msg = `It's a tie! ${winners.map(w => w.name).join(' & ')} 🎉`;
     else msg = `🏆 ${winners[0].name} Team wins! 🏆`;
     $('endTotal').textContent = msg;
-    if (max > 0) {
+    if (best > 0) {
       winners.forEach(w => { const c = cols[teams.indexOf(w)]; c.classList.add('win'); c.querySelector('.thead').textContent = `👑 ${w.name} 👑`; });
       sfx.fanfare(); confetti();
     }
@@ -823,20 +968,34 @@ $('backBtn').onclick = () => { endTimers.forEach(clearTimeout); $('endOverlay').
 $('againBtn').onclick = () => { endTimers.forEach(clearTimeout); $('endOverlay').classList.remove('show'); $('startOverlay').classList.add('show'); };
 
 function newGame(n) {
+  stage.classList.toggle('sil', settings.silhouette);
   setupTeams(n);
-  hook.state = 'idle'; hook.caught = null; current = null;
+  hook.state = 'idle'; hook.caught = null; current = null; judging = false;
   $('dropBtn').disabled = false;
   resetSea();
   playing = true;
   if (n > 1) setTimeout(() => showTurn(), 300);
 }
+let pendingTeams = 1;
 document.querySelectorAll('[data-teams]').forEach(b => b.onclick = () => {
-  ac(); $('startOverlay').classList.remove('show'); newGame(+b.dataset.teams);
+  ac(); $('startOverlay').classList.remove('show');
+  pendingTeams = +b.dataset.teams;
+  if (settings.scoring === 'size') showPointsTable(); else newGame(pendingTeams);
 });
+function showPointsTable() {
+  const g = $('pointsGrid'); g.innerHTML = '';
+  NAMES.slice().sort((x, y) => SIZE_POINTS[y] - SIZE_POINTS[x]).forEach(n => {
+    const d = document.createElement('div'); d.className = 'ptile';
+    d.innerHTML = `<img src="animals/${n}.webp" alt=""><div class="pstars">${'⭐'.repeat(SIZE_POINTS[n])}</div><div class="pnum">${SIZE_POINTS[n]} point${SIZE_POINTS[n] > 1 ? 's' : ''}</div>`;
+    g.appendChild(d);
+  });
+  $('pointsOverlay').classList.add('show');
+}
+$('pointsGo').onclick = () => { $('pointsOverlay').classList.remove('show'); newGame(pendingTeams); };
 $('dropBtn').onclick = dropHook;
 
 addEventListener('keydown', e => {
-  if (e.repeat || $('startOverlay').classList.contains('show')) return;
+  if (e.repeat || $('startOverlay').classList.contains('show') || $('pointsOverlay').classList.contains('show')) return;
   const k = e.key.toLowerCase();
   if (k === ' ') { e.preventDefault(); if (current) reveal(); else dropHook(); }
   else if (k === 'enter') { e.preventDefault(); reveal(); }
